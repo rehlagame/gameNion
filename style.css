@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap');
 
+:root {
+    --primary-glow: #4cd1ff;
+    --secondary-glow: #ff3366;
+    --dark-bg: #0d0d1a;
+    --mid-bg: #1a1a2e;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -8,7 +15,7 @@
 
 body {
     font-family: 'Tajawal', sans-serif;
-    background: #0d0d1a;
+    background: var(--dark-bg);
     min-height: 100vh;
     min-height: -webkit-fill-available;
     width: 100vw;
@@ -20,9 +27,10 @@ body {
 
 .game-container {
     position: relative;
-    background: #1a1a2e;
-    box-shadow: 0 0 50px rgba(76, 209, 255, 0.4);
-    border: 2px solid rgba(76, 209, 255, 0.5);
+    background: var(--mid-bg);
+    box-shadow: 0 0 60px rgba(76, 209, 255, 0.4), inset 0 0 20px rgba(76, 209, 255, 0.2);
+    border: 2px solid rgba(76, 209, 255, 0.6);
+    border-radius: 10px;
     overflow: hidden;
     width: 100%;
     height: 100%;
@@ -31,17 +39,23 @@ body {
     aspect-ratio: 3 / 2;
 }
 
-/* شاشة البداية */
-.menu-screen {
+/* Screens */
+.menu-screen, .game-over {
     position: absolute;
     width: 100%; height: 100%;
-    background: linear-gradient(135deg, #16222A 0%, #3A6073 100%);
-    display: flex; flex-direction: column;
-    justify-content: center; align-items: center;
-    z-index: 100;
-    transition: opacity 0.7s ease, transform 0.7s ease;
-    text-align: center; color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
     padding: 20px;
+    z-index: 100;
+}
+
+.menu-screen {
+    background: linear-gradient(135deg, #16222A 0%, #3A6073 100%);
+    transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
 .menu-screen.hidden {
@@ -50,17 +64,26 @@ body {
     pointer-events: none;
 }
 
+.game-over {
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px) saturate(1.2);
+    display: none;
+}
+
+/* Typography */
 .game-title {
-    font-size: clamp(3rem, 10vw, 5rem);
+    font-size: clamp(3rem, 10vw, 5.5rem);
     font-weight: 900;
-    color: #4cd1ff;
-    text-shadow: 0 0 10px #4cd1ff, 0 0 20px #4cd1ff, 0 0 40px #4cd1ff;
+    color: var(--primary-glow);
+    text-shadow: 0 0 10px var(--primary-glow), 0 0 25px var(--primary-glow), 0 0 50px var(--primary-glow), 0 0 100px #fff;
     margin-bottom: 2rem;
     animation: flicker 3s infinite alternate;
 }
 
 @keyframes flicker {
-    0%, 18%, 22%, 25%, 53%, 57%, 100% { text-shadow: 0 0 4px #fff, 0 0 11px #fff, 0 0 19px #fff, 0 0 40px #0fa, 0 0 80px #0fa, 0 0 90px #0fa, 0 0 100px #0fa, 0 0 150px #0fa; }
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+        text-shadow: 0 0 8px #fff, 0 0 15px #fff, 0 0 25px #fff, 0 0 45px var(--primary-glow), 0 0 80px var(--primary-glow);
+    }
     20%, 24%, 55% { text-shadow: none; }
 }
 
@@ -70,97 +93,89 @@ body {
     margin-bottom: 3rem;
     line-height: 1.8;
     color: #e0e0e0;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
-.start-button {
-    padding: 18px 55px;
-    font-family: 'Tajawal', sans-serif;
-    font-size: clamp(1.2rem, 4vw, 1.5rem);
-    font-weight: 700;
-    background: #4cd1ff;
-    color: #1a1a2e;
-    border: none;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(76, 209, 255, 0.6);
+.game-over h2 {
+    font-size: clamp(3rem, 9vw, 4.5rem);
+    color: var(--secondary-glow);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px var(--secondary-glow), 0 0 25px var(--secondary-glow), 0 0 40px #fff;
+    margin-bottom: 1rem;
 }
 
-.start-button:hover {
-    transform: translateY(-5px) scale(1.05);
-    box-shadow: 0 0 35px rgba(76, 209, 255, 1);
-}
-
-.controls-info {
-    position: absolute;
-    bottom: 20px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: clamp(0.8rem, 2vw, 0.9rem);
-    width: 100%;
-}
-
-.controls-info .desktop { display: block; }
-.controls-info .mobile { display: none; }
-@media (hover: none) and (pointer: coarse) {
-    .controls-info .desktop { display: none; }
-    .controls-info .mobile { display: block; }
-}
-
-/* شاشة اللعب */
-.game-screen {
-    width: 100%; height: 100%;
-    position: relative;
-    display: none;
-}
-
-canvas {
-    width: 100%; height: 100%;
-    display: block;
-    background: #0d0d1a;
-}
-
-.game-ui {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    pointer-events: none;
-}
-.game-ui > * {
-    pointer-events: auto;
-}
-
-.score {
-    color: #fff;
+.final-score {
     font-size: clamp(1.5rem, 5vw, 2rem);
+    margin-bottom: 2rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Buttons */
+.start-button, .restart-button {
+    font-family: 'Tajawal', sans-serif;
     font-weight: 700;
-    text-shadow: 0 0 10px #ff3366;
-    display: flex;
-    align-items: center;
-    gap: 1ch;
-}
-
-/* ===== تعديل: حاوية للأزرار ===== */
-.ui-buttons {
-    display: flex;
-    gap: 15px; /* مسافة بين الأزرار */
-}
-
-/* ===== تعديل: تنسيق موحد لأزرار الواجهة ===== */
-.ui-button {
-    width: clamp(40px, 8vw, 50px);
-    height: clamp(40px, 8vw, 50px);
-    background: rgba(76, 209, 255, 0.2);
-    border: 1px solid rgba(76, 209, 255, 0.4);
-    border-radius: 50%;
+    border: none;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.start-button {
+    padding: 18px 55px;
+    font-size: clamp(1.2rem, 4vw, 1.5rem);
+    background: var(--primary-glow);
+    color: var(--dark-bg);
+    border-radius: 50px;
+    box-shadow: 0 0 20px rgba(76, 209, 255, 0.6);
+}
+.start-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 0 40px rgba(76, 209, 255, 1);
+}
+
+.restart-button {
+    width: clamp(60px, 15vw, 70px);
+    height: clamp(60px, 15vw, 70px);
+    background: var(--primary-glow);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(76, 209, 255, 0.6);
+}
+.restart-button:hover {
+    transform: scale(1.1) rotate(360deg);
+    box-shadow: 0 0 35px rgba(76, 209, 255, 1);
+}
+.restart-button svg { width: 50%; height: 50%; fill: var(--dark-bg); }
+
+/* In-Game UI */
+.game-screen { display: none; width: 100%; height: 100%; position: relative; }
+canvas { display: block; width: 100%; height: 100%; background: var(--dark-bg); }
+
+.game-ui {
+    position: absolute; top: 0; left: 0; width: 100%; padding: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    pointer-events: none;
+    text-shadow: 0 0 5px rgba(0,0,0,0.7);
+}
+.game-ui > * { pointer-events: auto; }
+
+.score {
+    color: #fff; font-size: clamp(1.5rem, 5vw, 2rem); font-weight: 700;
+    text-shadow: 0 0 10px var(--secondary-glow);
+    display: flex; align-items: center; gap: 1ch;
+}
+
+.ui-buttons { display: flex; gap: 15px; }
+
+.ui-button {
+    width: clamp(40px, 8vw, 50px); height: clamp(40px, 8vw, 50px);
+    background: rgba(76, 209, 255, 0.15);
+    border: 1px solid rgba(76, 209, 255, 0.4);
+    border-radius: 50%; cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex; justify-content: center; align-items: center;
     padding: 8px;
 }
 .ui-button:hover {
@@ -168,61 +183,43 @@ canvas {
     transform: scale(1.1);
     box-shadow: 0 0 15px rgba(76, 209, 255, 0.7);
 }
-.ui-button#ingameRestartBtn:hover {
-    transform: scale(1.1) rotate(360deg);
-}
-.ui-button svg {
-    width: 100%;
-    height: 100%;
-    fill: #fff;
-}
+.ui-button#ingameRestartBtn:hover { transform: scale(1.1) rotate(360deg); }
+.ui-button svg { width: 100%; height: 100%; fill: #fff; }
 
-
-/* شاشة نهاية اللعبة */
-.game-over {
-    position: absolute;
-    width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(5px);
-    display: none;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
-    color: #fff;
-    padding: 20px;
-}
-
-.game-over h2 {
-    font-size: clamp(2.5rem, 8vw, 3.5rem);
-    color: #ff3366;
-    text-shadow: 0 0 15px #ff3366;
-    margin-bottom: 1rem;
-}
-
-.final-score {
-    font-size: clamp(1.5rem, 5vw, 2rem);
-    margin-bottom: 2rem;
-}
-
-.restart-button {
-    width: clamp(60px, 15vw, 70px);
-    height: clamp(60px, 15vw, 70px);
-    background: #4cd1ff;
-    border: none; border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 20px rgba(76, 209, 255, 0.6);
-    display: flex; justify-content: center; align-items: center;
-}
-.restart-button:hover {
-    transform: scale(1.1) rotate(360deg);
-    box-shadow: 0 0 30px rgba(76, 209, 255, 1);
-}
-.restart-button svg { width: 50%; height: 50%; fill: #1a1a2e; }
-
-.restart-info {
-    margin-top: 1.5rem;
-    color: rgba(255, 255, 255, 0.7);
+.controls-info, .restart-info {
+    position: absolute; bottom: 20px;
+    width: 100%; color: rgba(255, 255, 255, 0.7);
     font-size: clamp(0.8rem, 2vw, 0.9rem);
+}
+.restart-info { position: static; margin-top: 1.5rem; }
+
+.controls-info .mobile { display: none; }
+@media (hover: none) and (pointer: coarse) {
+    .controls-info .desktop { display: none; }
+    .controls-info .mobile { display: block; }
+}
+
+/* ===== Footer Styles ===== */
+.page-footer {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 101; /* Ensure it's above the game container but below menus if needed */
+}
+
+.page-footer a {
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    font-weight: 400;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.page-footer a:hover {
+    color: var(--primary-glow);
+    text-shadow: 0 0 8px var(--primary-glow);
 }
